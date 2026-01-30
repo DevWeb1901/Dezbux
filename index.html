@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Deza Store - Top Up Robux</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{font-family:Arial;box-sizing:border-box}
+body{margin:0;background:#f3f3f3}
+
+header{
+background:#fff;
+padding:15px;
+font-size:20px;
+font-weight:bold;
+text-align:center;
+border-bottom:1px solid #ddd;
+}
+
+.container{max-width:450px;margin:auto;padding:15px}
+
+.card{
+background:#fff;
+padding:15px;
+border-radius:10px;
+margin-bottom:15px;
+box-shadow:0 2px 6px rgba(0,0,0,.1);
+}
+
+input{
+width:100%;
+padding:12px;
+margin-top:8px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+input.error{
+border:2px solid red;
+animation:shake .3s;
+}
+
+@keyframes shake{
+0%{transform:translateX(0)}
+25%{transform:translateX(-5px)}
+50%{transform:translateX(5px)}
+75%{transform:translateX(-5px)}
+100%{transform:translateX(0)}
+}
+
+.pack{
+border:1px solid #ddd;
+padding:10px;
+margin-top:8px;
+border-radius:6px;
+cursor:pointer;
+display:flex;
+justify-content:space-between;
+}
+.pack:hover{background:#f1f1f1}
+
+.btn{
+margin-top:10px;
+background:#e0e0e0;
+padding:12px;
+text-align:center;
+border-radius:6px;
+font-weight:bold;
+cursor:pointer;
+}
+
+#harga{margin-top:10px;font-weight:bold}
+
+/* LOADING */
+#loading{
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,.5);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:99;
+}
+.loader{
+width:70px;height:70px;
+border-radius:50%;
+background:#eee;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* BUNGA */
+.flower{
+position:fixed;
+top:-30px;
+font-size:20px;
+opacity:.6;
+animation:fall 8s linear infinite;
+}
+@keyframes fall{
+from{transform:translateY(-50px)}
+to{transform:translateY(110vh)}
+}
+</style>
+</head>
+
+<body>
+
+<header>DEZA STORE — TOP UP ROBUX</header>
+
+<div class="container">
+
+<!-- ORDER -->
+<div class="card">
+<h3>🛒 Order Robux</h3>
+
+<input id="user" placeholder="Username Roblox">
+
+<div class="pack" onclick="pilih(50)">50 Robux <b>Rp 8.500</b></div>
+<div class="pack" onclick="pilih(100)">100 Robux <b>Rp 17.000</b></div>
+<div class="pack" onclick="pilih(250)">250 Robux <b>Rp 42.500</b></div>
+<div class="pack" onclick="pilih(500)">500 Robux <b>Rp 85.000</b></div>
+
+<input id="jumlah" type="number" placeholder="Atau isi manual" oninput="hitung()">
+
+<p id="harga">Harga: Rp 0</p>
+
+<div class="btn" onclick="order()">Order Sekarang</div>
+</div>
+
+<!-- TENTANG -->
+<div class="card">
+<h3>📘 Tentang Kami</h3>
+<p>
+<b>Deza Store</b> adalah layanan top up Robux terpercaya
+dengan sistem cepat, aman, dan praktis.
+</p>
+
+<p><b>Owner & Founder:</b><br>
+Dezzas Aldavin</p>
+
+<p><b>Website Maker:</b><br>
+Jibran F.A</p>
+</div>
+
+<!-- CHANNEL -->
+<div class="card">
+<div class="btn" onclick="playClick();window.open('https://whatsapp.com/channel/0029Vb7RHYLChq6OlHXMv02m')">
+📢 Join Channel WhatsApp
+</div>
+</div>
+
+</div>
+
+<div id="loading"><div class="loader">R$</div></div>
+
+<audio id="clickSound" preload="auto">
+<source src="https://cdn.pixabay.com/audio/2022/03/15/audio_0a4f8c7a63.mp3">
+</audio>
+
+<script>
+let soundReady=false;
+
+document.body.addEventListener("click",()=>{
+let s=document.getElementById("clickSound");
+s.play().then(()=>{s.pause();s.currentTime=0;soundReady=true;});
+},{once:true});
+
+function playClick(){
+if(!soundReady) return;
+let s=document.getElementById("clickSound");
+s.currentTime=0;
+s.play();
+}
+
+function pilih(v){
+playClick();
+document.getElementById("jumlah").value=v;
+hitung();
+}
+
+function hitung(){
+let j=document.getElementById("jumlah").value;
+let harga=j*170;
+document.getElementById("harga").innerText=
+"Harga: Rp "+harga.toLocaleString("id-ID");
+}
+
+function order(){
+playClick();
+let u=document.getElementById("user");
+let j=document.getElementById("jumlah");
+
+u.classList.remove("error");
+j.classList.remove("error");
+
+if(u.value==""||j.value==""||j.value<=0){
+u.classList.add("error");
+j.classList.add("error");
+alert("Lengkapi data dulu!");
+return;
+}
+
+document.getElementById("loading").style.display="flex";
+
+setTimeout(()=>{
+let harga=j.value*170;
+let text=`Halo MinDez, saya mau order Robux
+
+Username: ${u.value}
+Jumlah: ${j.value}
+Harga: Rp ${harga.toLocaleString("id-ID")}`;
+
+window.open("https://wa.me/6287897493566?text="+encodeURIComponent(text));
+document.getElementById("loading").style.display="none";
+},1200);
+}
+
+/* BUNGA */
+for(let i=0;i<15;i++){
+let f=document.createElement("div");
+f.className="flower";
+f.innerHTML="❀";
+f.style.left=Math.random()*100+"vw";
+f.style.animationDuration=(5+Math.random()*5)+"s";
+document.body.appendChild(f);
+}
+</script>
+
+</body>
+</html>
